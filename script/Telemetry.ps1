@@ -5,7 +5,7 @@ Param(
 
 $name = "$($env:AGENT_JOBNAME)"
 $started = [datetime]::Parse($($env:STARTTIME))
-$duration = ([System.DateTimeOffset]::UctNow - $started)
+$duration = ([System.DateTimeOffset]::UtcNow - $started)
 $client = New-Object -TypeName Microsoft.ApplicationInsights.TelemetryClient
 $client.InstrumentationKey = $InstrumentationKey
 $client.Context.Session.Id = "$($env:SYSTEM_TEAMPROJECT)/$($env:BUILD_BUILDID)"
