@@ -1,0 +1,56 @@
+name: $(Build.DefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd):$(Rev:rr)
+
+trigger: none
+pr: none
+
+schedules:
+  - cron: '0/3 * * * *'
+    displayName: 'CI Static WebSite'
+    always: true
+    branches:
+     include:
+       - main
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: 'BuildStaticWebSite'
+    displayName: 'Build Static WebSite'
+    jobs:
+      - job: 'Build'
+        displayName: 'Build Solution'
+        variables:
+          - name: startTime
+            value: $[pipeline.startTime]
+          - group: 'Application Insights Keys'
+        steps: 
+          - checkout: Self
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '12.x'
+          - script: |
+              npm install -g gatsby-cli
+            displayName: 'Install Gatsby-CLI'
+          - script: |
+              cd blog
+              yarn install
+            displayName: 'Install Dependencies'
+          - script: |
+              cd blog
+              yarn build
+            displayName: 'Build'
+          - task: CopyFiles@2
+            displayName: 'Copy Files'
+            inputs:
+              sourceFolder: '$(System.DefaultWorkingDirectory)/blog/public'
+              Contents: '**'
+              TargetFolder: '$(Build.ArtifactsStagingDirectory)'
+              CleanTargetFolder: true
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
+            inputs:
+              PathToPublish: '$(Build.ArtifactsStagingDirectory)'
+              ArtifactName: 'Site'
+              publishLocation: Container
+          
