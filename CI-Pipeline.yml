@@ -1,4 +1,4 @@
-name: $(Build.DefinitionName)-$(Date:yyyyMMdd):$(Rev:rr)
+name: 'GlobalAzure-$(Date:yyyyMMdd):$(Rev:rr)'
 
 trigger: none
 pr: none
