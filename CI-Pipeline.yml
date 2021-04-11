@@ -53,4 +53,15 @@ stages:
               PathToPublish: '$(Build.ArtifactsStagingDirectory)'
               ArtifactName: 'Site'
               publishLocation: Container
-          
+          - task: PowerShell@2
+            displayName: 'Report Success Result'
+            condition: succeeded()
+            inputs:
+              filePath: '$(System.DefaultWorkingDirectory)/script/Telemetry.ps1'
+              arguments: '-InstrumentationKey $InstrumentationKey'
+          - task: PowerShell@2
+            displayName: 'Report Fail Result'
+            condition: failed()
+            inputs:
+              filePath: '$(System.DefaultWorkingDirectory)/script/Telemetry.ps1'
+              arguments: '-InstrumentationKey $InstrumentationKey -IsFail $true'
