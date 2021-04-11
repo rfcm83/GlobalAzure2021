@@ -1,4 +1,4 @@
-name: $(Build.DefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd):$(Rev:rr)
+name: $(Build.DefinitionName)-$(Date:yyyyMMdd):$(Rev:rr)
 
 trigger: none
 pr: none
@@ -58,10 +58,10 @@ stages:
             condition: succeeded()
             inputs:
               filePath: '$(System.DefaultWorkingDirectory)/script/Telemetry.ps1'
-              arguments: '-InstrumentationKey $InstrumentationKey'
+              arguments: '-InstrumentationKey $(InstrumentationKey)'
           - task: PowerShell@2
             displayName: 'Report Fail Result'
             condition: failed()
             inputs:
               filePath: '$(System.DefaultWorkingDirectory)/script/Telemetry.ps1'
-              arguments: '-InstrumentationKey $InstrumentationKey -IsFail $true'
+              arguments: '-InstrumentationKey $(InstrumentationKey) -IsFail $true'
